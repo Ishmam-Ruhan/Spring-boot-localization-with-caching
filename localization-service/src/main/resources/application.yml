@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: book-service
+
+  profiles:
+    active: development

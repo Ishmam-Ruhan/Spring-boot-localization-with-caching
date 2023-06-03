@@ -1,0 +1,72 @@
+#Application Server Port
+server:
+  port: 8081
+
+#cloud:
+#  aws:
+#    credentials:
+#      access-key: AKIAIOSFODNN7EXAMPLE
+#      secret-key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+#    region:
+#      static: us-east-1
+#    stack:
+#      auto: false
+#aws:
+#  service-endpoint: http://localhost:4566
+
+application:
+#  bucket:
+#    name: sjwpbd
+  backend:
+    url: http://localhost:8081
+
+
+#Application Time-Zone
+spring:
+  jackson:
+    time-zone: Asia/Dhaka
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+
+  cache:
+      cache-names: book_library
+      caffeine:
+        spec: maximumSize=200,expireAfterWrite=900s
+  main:
+    allow-circular-references: true   # Some beans is depended upon another bean. By setting up this dependency, no compiler error will occur regarding this.
+
+  mail:
+    host: smtp-relay.sendinblue.com
+    port: 587
+    username: ishmamruhan97@gmail.com
+    password: NamDRs89yr4TwcJp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          connectiontimeout: 15000
+          timeout: 15000
+          writetimeout: 15000
+          from: ishmamruhan97@gmail.com
+          starttls:
+            enable: true
+            required: true
+
+  #Application Database Setup
+  datasource:
+    url: jdbc:postgresql://localhost:5432/book_service
+    username: postgres
+    password: root
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL9Dialect
+        enable_lazy_load_no_trans: true                     # To avoid "failed to lazily initialize a collection of role could not initialize proxy - no session" error
+        format_sql: true
+        jdbc:
+          batch_size: 50
+          order_inserts: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
