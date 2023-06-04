@@ -56,7 +56,7 @@ Now, What we have to modify our service layer?
 
 @Autowire or inject the dependency to our service. Now,
 
-Step-1: Perform all operations as usual but EXCEPT localized fields. Do Not modify them. Save data using repository and pass the saved object, your repository object, your request body object, localization-Type(simple enum that indicated your feature name) to LocalizedUtil service. This service will responsible rest of the work. You'll get return back with an updated object.
+Step-1: Perform all operations as usual but EXCEPT localized fields. Do Not modify localized fields. Save entity using repository and pass the saved object, your repository object, your request body object, localization-Type(simple enum that indicated your feature name) to LocalizedUtil service. This service will responsible rest of the work. You'll get return back with an updated object.
 
 ```bash
       public Book saveBook(BookRequest bookRequest){
