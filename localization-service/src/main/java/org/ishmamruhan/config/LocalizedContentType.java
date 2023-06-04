@@ -1,4 +1,4 @@
-package org.ishmamruhan.enums;
+package org.ishmamruhan.config;
 
 public enum LocalizedContentType {
     BOOK

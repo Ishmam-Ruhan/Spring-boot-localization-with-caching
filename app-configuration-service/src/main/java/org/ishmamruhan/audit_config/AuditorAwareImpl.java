@@ -1,6 +1,5 @@
-package org.ishmamruhan.Auditor;
+package org.ishmamruhan.audit_config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.AuditorAware;
 
 import java.util.Optional;

@@ -1,7 +1,7 @@
 package org.ishmamruhan.repositories;
 
+import org.ishmamruhan.config.LocalizedContentType;
 import org.ishmamruhan.entities.LocalizedContents;
-import org.ishmamruhan.enums.LocalizedContentType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

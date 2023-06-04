@@ -1,57 +1,9 @@
-#Application Server Port
-server:
-  port: 8081
-
-#cloud:
-#  aws:
-#    credentials:
-#      access-key: AKIAIOSFODNN7EXAMPLE
-#      secret-key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-#    region:
-#      static: us-east-1
-#    stack:
-#      auto: false
-#aws:
-#  service-endpoint: http://localhost:4566
-
-application:
-#  bucket:
-#    name: sjwpbd
-  backend:
-    url: http://localhost:8081
-
-
 #Application Time-Zone
 spring:
   jackson:
     time-zone: Asia/Dhaka
     serialization:
       FAIL_ON_EMPTY_BEANS: false
-
-  main:
-    allow-circular-references: true   # Some beans is depended upon another bean. By setting up this dependency, no compiler error will occur regarding this.
-
-  cache:
-    cache-names: book_library
-    caffeine:
-      spec: maximumWeight=20889600,expireAfterWrite=900s
-
-  mail:
-    host: smtp-relay.sendinblue.com
-    port: 587
-    username: ishmamruhan97@gmail.com
-    password: NamDRs89yr4TwcJp
-    properties:
-      mail:
-        smtp:
-          auth: true
-          connectiontimeout: 15000
-          timeout: 15000
-          writetimeout: 15000
-          from: ishmamruhan97@gmail.com
-          starttls:
-            enable: true
-            required: true
 
   #Application Database Setup
   datasource:
@@ -70,4 +22,3 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-

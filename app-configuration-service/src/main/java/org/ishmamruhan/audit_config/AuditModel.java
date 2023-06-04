@@ -1,4 +1,4 @@
-package org.ishmamruhan;
+package org.ishmamruhan.audit_config;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.annotation.CreatedBy;

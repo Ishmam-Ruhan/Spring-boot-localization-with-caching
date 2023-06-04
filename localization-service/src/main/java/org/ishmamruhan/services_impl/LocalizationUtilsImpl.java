@@ -1,8 +1,8 @@
 package org.ishmamruhan.services_impl;
 
-import org.ishmamruhan.LocalizedAppConstants;
+import org.ishmamruhan.config.LocalizedAppConstants;
+import org.ishmamruhan.config.LocalizedContentType;
 import org.ishmamruhan.entities.LocalizedContents;
-import org.ishmamruhan.enums.LocalizedContentType;
 import org.ishmamruhan.repositories.LocalizedContentRepository;
 import org.ishmamruhan.services.LocalizationUtils;
 import org.springframework.cache.annotation.CacheEvict;

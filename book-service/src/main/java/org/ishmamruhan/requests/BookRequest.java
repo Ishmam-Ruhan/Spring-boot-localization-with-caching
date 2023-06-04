@@ -1,4 +1,6 @@
-package org.ishmamruhan;
+package org.ishmamruhan.requests;
+
+import org.ishmamruhan.config.LocalizedAppConstants;
 
 import java.util.HashMap;
 import java.util.Map;

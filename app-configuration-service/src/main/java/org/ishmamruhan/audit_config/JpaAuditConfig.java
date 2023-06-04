@@ -1,4 +1,4 @@
-package org.ishmamruhan.Auditor;
+package org.ishmamruhan.audit_config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

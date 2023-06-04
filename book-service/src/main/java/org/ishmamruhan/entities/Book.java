@@ -1,4 +1,6 @@
-package org.ishmamruhan;
+package org.ishmamruhan.entities;
+
+import org.ishmamruhan.audit_config.AuditModel;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -6,7 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Book extends AuditModel<String>{
+public class Book extends AuditModel<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
