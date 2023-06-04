@@ -1,4 +1,4 @@
-package org.ishmamruhan.config;
+package org.ishmamruhan.constants;
 
 public class LocalizedAppConstants {
     public static final String LOCALIZED_FIELD_STARTS_WITH = "_localization_";

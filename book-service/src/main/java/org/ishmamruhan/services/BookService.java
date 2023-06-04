@@ -1,6 +1,6 @@
 package org.ishmamruhan.services;
 
-import org.ishmamruhan.config.LocalizedContentType;
+import org.ishmamruhan.constants.LocalizedContentType;
 import org.ishmamruhan.cache_configuration.configurations.CacheConfig;
 import org.ishmamruhan.entities.Book;
 import org.ishmamruhan.repository.BookRepository;

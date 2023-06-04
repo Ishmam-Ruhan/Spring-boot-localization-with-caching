@@ -1,7 +1,7 @@
 package org.ishmamruhan.entities;
 
 import org.ishmamruhan.audit_config.AuditModel;
-import org.ishmamruhan.config.LocalizedContentType;
+import org.ishmamruhan.constants.LocalizedContentType;
 
 import javax.persistence.*;
 

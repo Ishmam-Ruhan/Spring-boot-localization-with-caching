@@ -1,12 +1,10 @@
 package org.ishmamruhan.services_impl;
 
-import org.ishmamruhan.config.LocalizedAppConstants;
-import org.ishmamruhan.config.LocalizedContentType;
+import org.ishmamruhan.constants.LocalizedAppConstants;
+import org.ishmamruhan.constants.LocalizedContentType;
 import org.ishmamruhan.entities.LocalizedContents;
 import org.ishmamruhan.repositories.LocalizedContentRepository;
 import org.ishmamruhan.services.LocalizationUtils;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
@@ -29,7 +27,6 @@ public class LocalizationUtilsImpl<T,R> implements LocalizationUtils<T,R> {
         this.localizationRepository = localizationRepository;
     }
 
-    @Cacheable("book_library")
     @Override
     public T saveLocalizedData(
             T object,R requestBodyObject,JpaRepository<T,Long> dbRepository, LocalizedContentType contentType) {
@@ -62,14 +59,12 @@ public class LocalizationUtilsImpl<T,R> implements LocalizationUtils<T,R> {
         return dbRepository.save(object);
     }
 
-    @CachePut("book_library")
     @Override
     public T updateLocalizedData(T object,R requestBodyObject,JpaRepository<T,Long> dbRepository, LocalizedContentType contentType) {
         deleteLocalizedData(object,contentType);
         return saveLocalizedData(object,requestBodyObject,dbRepository,contentType);
     }
 
-    @CacheEvict("book_library")
     @Override
     public void deleteLocalizedData(T object, LocalizedContentType contentType) {
         List<LocalizedContents> localizedContents = localizationRepository.findAllByContentIdEqualsAndContentTypeEquals(
@@ -80,7 +75,6 @@ public class LocalizationUtilsImpl<T,R> implements LocalizationUtils<T,R> {
         }
     }
 
-    @Cacheable("book_library")
     @Override
     public T getLocalizedData(
             T object, String languageCode, LocalizedContentType contentType, String... fields) {

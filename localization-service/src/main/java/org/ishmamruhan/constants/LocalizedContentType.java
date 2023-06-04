@@ -1,4 +1,4 @@
-package org.ishmamruhan.config;
+package org.ishmamruhan.constants;
 
 public enum LocalizedContentType {
     BOOK
