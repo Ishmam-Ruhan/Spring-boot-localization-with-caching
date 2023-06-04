@@ -1,0 +1,151 @@
+{
+	"info": {
+		"_postman_id": "b9228db0-05d5-42cc-be9e-2b484e919d1e",
+		"name": "Spring Boot Localization With Cache",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27666890"
+	},
+	"item": [
+		{
+			"name": "Create Localized Book",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"_localization_authorName\": {\n        \"en\" : \"Ishmam Ruhan\",\n        \"bn\" : \"ইশমাম রুহান\",\n        \"ru\" : \"Ишмам Рухан\"\n    },\n    \"_localization_bookTitle\" : {\n        \"en\" : \"Merrill physics : principles and problems\",\n        \"bn\" : \"মেরিল পদার্থবিদ্যা: নীতি ও সমস্যা\",\n        \"ru\" : \"Физика Меррилла: принципы и проблемы\"\n    },\n    \"_localization_bookPublisher\" : {\n        \"en\" : \"Glenco/McGraw-Hill\",\n        \"bn\" : \"গ্লেনকো/ম্যাকগ্রা-হিল\",\n        \"ru\" : \"Гленко/Макгроу-Хилл\"\n    },\n    \"bookEIN\" : \"0028267214\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/book/save",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"book",
+						"save"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Books (en)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/api/book/all?language=en",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"book",
+						"all"
+					],
+					"query": [
+						{
+							"key": "language",
+							"value": "en"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Books (bn)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/api/book/all?language=bn",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"book",
+						"all"
+					],
+					"query": [
+						{
+							"key": "language",
+							"value": "bn"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Books (ru)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/api/book/all?language=ru",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"book",
+						"all"
+					],
+					"query": [
+						{
+							"key": "language",
+							"value": "ru"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Book",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 1,\n    \"_localization_authorName\": {\n        \"en\" : \"Paul W Zitzewitz\",\n        \"bn\" : \"পল ডব্লিউ জিৎজেউইৎস\",\n        \"ru\" : \"Пол В Зитцевиц\"\n    },\n    \"_localization_bookTitle\" : {\n        \"en\" : \"Merrill physics : principles and problems\",\n        \"bn\" : \"মেরিল পদার্থবিদ্যা: নীতি ও সমস্যা\",\n        \"ru\" : \"Физика Меррилла: принципы и проблемы\"\n    },\n    \"_localization_bookPublisher\" : {\n        \"en\" : \"Glenco/McGraw-Hill\",\n        \"bn\" : \"গ্লেনকো/ম্যাকগ্রা-হিল\",\n        \"ru\" : \"Гленко/Макгроу-Хилл\"\n    },\n    \"bookEIN\" : \"0028267214\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/book/update",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"book",
+						"update"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
