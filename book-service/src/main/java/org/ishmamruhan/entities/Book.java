@@ -1,14 +1,18 @@
 package org.ishmamruhan.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.ishmamruhan.audit_config.AuditModel;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Book extends AuditModel<String> {
+
+    /**
+     *  At Entity level, we have to add a method that provides us localization field names
+     *  I've added it at the end of this entity
+     */
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -58,6 +62,8 @@ public class Book extends AuditModel<String> {
         this.bookEIN = bookEIN;
     }
 
+    @JsonIgnore
+    @Transient
     public String[] availableLocalizedFields(){
         return new String[]{"authorName","bookTitle","bookPublisher"};
     }

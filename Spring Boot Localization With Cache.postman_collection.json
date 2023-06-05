@@ -124,7 +124,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\": 1,\n    \"_localization_authorName\": {\n        \"en\" : \"Paul W Zitzewitz\",\n        \"bn\" : \"পল ডব্লিউ জিৎজেউইৎস\",\n        \"ru\" : \"Пол В Зитцевиц\"\n    },\n    \"_localization_bookTitle\" : {\n        \"en\" : \"Merrill physics : principles and problems\",\n        \"bn\" : \"মেরিল পদার্থবিদ্যা: নীতি ও সমস্যা\",\n        \"ru\" : \"Физика Меррилла: принципы и проблемы\"\n    },\n    \"_localization_bookPublisher\" : {\n        \"en\" : \"Glenco/McGraw-Hill\",\n        \"bn\" : \"গ্লেনকো/ম্যাকগ্রা-হিল\",\n        \"ru\" : \"Гленко/Макгроу-Хилл\"\n    },\n    \"bookEIN\" : \"0028267214\"\n}",
+					"raw": "{\n    \"id\": 211,\n    \"_localization_authorName\": {\n        \"en\" : \"Paul W Zitzewitz\",\n        \"bn\" : \"পল ডব্লিউ জিৎজেউইৎস\",\n        \"ru\" : \"Пол В Зитцевиц\"\n    },\n    \"_localization_bookTitle\" : {\n        \"en\" : \"Merrill physics : principles and problems\",\n        \"bn\" : \"মেরিল পদার্থবিদ্যা: নীতি ও সমস্যা\",\n        \"ru\" : \"Физика Меррилла: принципы и проблемы\"\n    },\n    \"_localization_bookPublisher\" : {\n        \"en\" : \"Glenco/McGraw-Hill\",\n        \"bn\" : \"গ্লেনকো/ম্যাকগ্রা-হিল\",\n        \"ru\" : \"Гленко/Макгроу-Хилл\"\n    },\n    \"bookEIN\" : \"0028267214\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -142,6 +142,59 @@
 						"api",
 						"book",
 						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search by Language and Localized Field",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/api/book/all?authorName=В&language=ru",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"book",
+						"all"
+					],
+					"query": [
+						{
+							"key": "authorName",
+							"value": "В"
+						},
+						{
+							"key": "language",
+							"value": "ru"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Book",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/api/book/delete/211",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"book",
+						"delete",
+						"211"
 					]
 				}
 			},

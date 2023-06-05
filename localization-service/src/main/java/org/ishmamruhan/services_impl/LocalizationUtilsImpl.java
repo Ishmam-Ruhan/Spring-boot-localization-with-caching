@@ -3,12 +3,14 @@ package org.ishmamruhan.services_impl;
 import org.ishmamruhan.constants.LocalizedAppConstants;
 import org.ishmamruhan.constants.LocalizedContentType;
 import org.ishmamruhan.entities.LocalizedContents;
+import org.ishmamruhan.repositories.AppLocalizedSpecification;
 import org.ishmamruhan.repositories.LocalizedContentRepository;
 import org.ishmamruhan.services.LocalizationUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,30 @@ public class LocalizationUtilsImpl<T,R> implements LocalizationUtils<T,R> {
 
     public LocalizationUtilsImpl(LocalizedContentRepository localizationRepository) {
         this.localizationRepository = localizationRepository;
+    }
+
+    @Override
+    public String getLanguageCode(Map<String, Object> parameters) {
+        String languageCode = (String)parameters.get(LocalizedAppConstants.LOCALIZED_PARAM_NAME);
+        parameters.remove(LocalizedAppConstants.LOCALIZED_PARAM_NAME);
+        return languageCode;
+    }
+
+    @Override
+    public Specification<T> getSpecification(
+            Map<String, Object> parameters, String languageCode,
+            LocalizedContentType localizedContentType, List<String> localizedFieldNames) {
+        Specification<T> specification = null;
+
+        if(!parameters.isEmpty()){
+            if(languageCode != null){
+                specification = AppLocalizedSpecification.getLocalizedSpecification(
+                        parameters, languageCode, localizedContentType, localizedFieldNames);
+            }else{
+                specification = AppLocalizedSpecification.getSimpleSpecification(parameters);
+            }
+        }
+        return specification;
     }
 
     @Override

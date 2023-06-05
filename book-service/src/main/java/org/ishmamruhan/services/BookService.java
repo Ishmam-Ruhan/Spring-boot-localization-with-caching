@@ -6,9 +6,12 @@ import org.ishmamruhan.entities.Book;
 import org.ishmamruhan.repository.BookRepository;
 import org.ishmamruhan.requests.BookRequest;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.ishmamruhan.cache_configuration.constants.CacheConstants.CACHE_KEY_GENERATOR;
 import static org.ishmamruhan.cache_configuration.constants.CacheConstants.CACHE_NAME;
@@ -17,7 +20,6 @@ import static org.ishmamruhan.cache_configuration.constants.CacheConstants.CACHE
 public class BookService {
     private final BookRepository bookRepository;
     private final LocalizationUtils<Book, BookRequest> localizationUtils;
-
     private final CacheConfig cacheConfig;
 
     public BookService(BookRepository bookRepository, LocalizationUtils<Book, BookRequest> localizationUtils, CacheConfig cacheConfig) {
@@ -27,6 +29,11 @@ public class BookService {
     }
 
     public Book saveBook(BookRequest bookRequest){
+        /**
+         * While creating new book, we just set non-localized data with main book entity from book request
+         * After that, we have to save this book and pass the saved book to localizationUtils. It will set
+         * all localized fields, set defaults to main book fields and return us the actual book object
+         */
         Book book = new Book();
         book.setBookEIN(bookRequest.getBookEIN());
         Book savedBook = bookRepository.save(book);
@@ -36,6 +43,11 @@ public class BookService {
     }
 
     public Book updateBook(BookRequest bookRequest){
+        /**
+         * While updating existing book, we just set non-localized data with main book entity from book request
+         * After that, we have to save this book and pass the saved book to localizationUtils. It will set
+         * all localized fields, set defaults to main book fields and return us the actual book object
+         */
         Book book = bookRepository.findById(bookRequest.getId()).orElseThrow(() -> new RuntimeException("Book not found!"));
         book.setBookEIN(bookRequest.getBookEIN());
         Book savedBook = bookRepository.save(book);
@@ -45,12 +57,51 @@ public class BookService {
     }
 
     @Cacheable(value = CACHE_NAME,keyGenerator = CACHE_KEY_GENERATOR)
-    public List<Book> getAllBooks(String language){
-        if(language == null){
-            return bookRepository.findAll();
+    public List<Book> getAllBooks(Map<String, Object> parameters){
+        /**
+         *  Step-1 : Find language code from parameters
+         */
+        String languageCode = localizationUtils.getLanguageCode(parameters);
+
+        /**
+         *  Step-2 : If you need specification, use localizationUtils to get specification
+         */
+        Specification<Book> specification = localizationUtils.getSpecification(
+            parameters,languageCode, LocalizedContentType.BOOK, List.of(new Book().availableLocalizedFields())
+        );
+
+        /**
+         *  Step-3 :  Now, find books using previous specification. I didn't use pageable here, we can use it if needed
+         */
+        List<Book> bookList;
+
+        if(specification != null){
+            bookList = bookRepository.findAll(specification);
+        }else{
+            bookList = bookRepository.findAll();
         }
-        List<Book> books = bookRepository.findAll();
-        return localizationUtils.getLocalizedData(books,language,LocalizedContentType.BOOK, new Book().availableLocalizedFields());
+
+        /**
+         *  Step-4 :  Finally, if language code is available(not null in this case), then return localized data
+         *  localizationUtils.getLocalizedData() method accepts both normal list and paged data and returns same.
+         */
+        if(languageCode != null){
+            return localizationUtils.getLocalizedData(
+                    bookList,languageCode,LocalizedContentType.BOOK,new Book().availableLocalizedFields()
+            );
+        }
+        return bookList;
+    }
+
+    public void deleteBook(Long id){
+        /**
+         *  Delete book from book table as well as localization table
+         */
+        Book book = bookRepository.findById(id).orElse(null);
+        if(book != null){
+            bookRepository.delete(book);
+            localizationUtils.deleteLocalizedData(book, LocalizedContentType.BOOK);
+        }
     }
 
     private void refreshCache(){

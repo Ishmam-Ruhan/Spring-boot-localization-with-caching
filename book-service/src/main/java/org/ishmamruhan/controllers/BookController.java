@@ -6,6 +6,7 @@ import org.ishmamruhan.services.BookService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/book")
@@ -15,10 +16,11 @@ public class BookController {
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
-
     @GetMapping("/all")
-    public List<Book> getAllBooks(@RequestParam(required = false) String language){
-        return bookService.getAllBooks(language);
+    public List<Book> getAllBooksPaginated(
+          @RequestParam  Map<String, Object> parameters
+    ){
+        return bookService.getAllBooks(parameters);
     }
 
     @PostMapping("/save")
@@ -30,4 +32,11 @@ public class BookController {
     public Book updateBook(@RequestBody BookRequest bookRequest){
         return bookService.updateBook(bookRequest);
     }
+
+    @DeleteMapping("/delete/{id}")
+    public String deleteBook(@PathVariable Long id){
+        bookService.deleteBook(id);
+        return "Book deleted successfully!";
+    }
+
 }
