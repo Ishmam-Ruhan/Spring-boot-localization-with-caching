@@ -54,6 +54,22 @@ public class BookService {
                 savedBook,bookRequest, bookRepository);
     }
 
+    /**
+     * Demo for quick processed data:
+     * Just pass a blank object, request parameters and repository -> localization utils will
+     * responsible to do entire process that we have done in "getAllBooks" method(immediate next method).
+     *
+     * localizationUtils also has a method called "getQuickProcessedPaginatedData" which takes extra
+     * one parameter called pageable, it will then return paginated data
+     *
+     * You can do explicitly every operation of your own like below "getAllBooks" method(immediate next method) of Book Service.
+     * or you can give the responsibility to "localizationUtils".
+     */
+    @Cacheable(value = CACHE_NAME,keyGenerator = CACHE_KEY_GENERATOR)
+    public List<Book> getAllBooksQuick(Map<String, Object> parameters){
+        return localizationUtils.getQuickProcessedData(new Book(),parameters,bookRepository);
+    }
+
     @Cacheable(value = CACHE_NAME,keyGenerator = CACHE_KEY_GENERATOR)
     public List<Book> getAllBooks(Map<String, Object> parameters){
         /**
@@ -99,7 +115,7 @@ public class BookService {
     }
 
     private void refreshCache(){
-        /*
+        /**
          * We have to provide the name of the functions from where we want to update the cache
          * if any changes happens.
          */

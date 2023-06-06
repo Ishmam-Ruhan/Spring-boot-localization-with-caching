@@ -1,6 +1,7 @@
 package org.ishmamruhan.services;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,11 @@ public interface LocalizationUtils<T,R> {
 
     List<T> getLocalizedData(
             List<T> objects, String languageCode);
+
+    List<T> getQuickProcessedData(
+            T object,Map<String, Object> parameters,JpaRepository<T,Long> dbRepository);
+    Page<T> getQuickProcessedPaginatedData(
+            T object,Map<String, Object> parameters, Pageable pageable,JpaRepository<T,Long> dbRepository);
 
     Page<T> getLocalizedData(
             Page<T> page, String languageCode);

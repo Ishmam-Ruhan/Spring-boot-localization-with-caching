@@ -20,7 +20,7 @@ public class BookController {
     public List<Book> getAllBooksPaginated(
           @RequestParam  Map<String, Object> parameters
     ){
-        return bookService.getAllBooks(parameters);
+        return bookService.getAllBooksQuick(parameters);
     }
 
     @PostMapping("/save")

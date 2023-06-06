@@ -8,8 +8,10 @@ import org.ishmamruhan.services.LocalizationUtils;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -149,6 +151,46 @@ public class LocalizationUtilsImpl<T,R> implements LocalizationUtils<T,R> {
             getLocalizedData(object,languageCode,contentType,localizedFields);
         }
         return objects;
+    }
+
+    @Override
+    public List<T> getQuickProcessedData(
+            T object,Map<String, Object> parameters,JpaRepository<T,Long> dbRepository) {
+        String languageCode = getLanguageCode(parameters);
+        Specification<T> specification = getSpecification(object,parameters,languageCode);
+
+        List<T> dataList;
+
+        if(specification != null){
+            dataList = ((JpaSpecificationExecutor<T>) dbRepository).findAll(specification);
+        }else{
+            dataList = dbRepository.findAll();
+        }
+
+        if(languageCode != null){
+            return getLocalizedData(dataList,languageCode);
+        }
+        return dataList;
+    }
+
+    @Override
+    public Page<T> getQuickProcessedPaginatedData(
+            T object,Map<String, Object> parameters, Pageable pageable,JpaRepository<T,Long> dbRepository) {
+        String languageCode = getLanguageCode(parameters);
+        Specification<T> specification = getSpecification(object,parameters,languageCode);
+
+        Page<T> pagedData;
+
+        if(specification != null){
+            pagedData = ((JpaSpecificationExecutor<T>) dbRepository).findAll(specification,pageable);
+        }else{
+            pagedData = dbRepository.findAll(pageable);
+        }
+
+        if(languageCode != null){
+            return getLocalizedData(pagedData,languageCode);
+        }
+        return pagedData;
     }
 
     @Override
