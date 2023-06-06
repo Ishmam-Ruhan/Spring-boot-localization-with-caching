@@ -62,7 +62,7 @@ public class BookService {
      * localizationUtils also has a method called "getQuickProcessedPaginatedData" which takes extra
      * one parameter called pageable, it will then return paginated data
      *
-     * You can do explicitly every operation of your own like below "getAllBooks" method(immediate next method) of Book Service.
+     * You can do explicitly every operation of your own like "getAllBooks" method(immediate next method) of Book Service.
      * or you can give the responsibility to "localizationUtils".
      */
     @Cacheable(value = CACHE_NAME,keyGenerator = CACHE_KEY_GENERATOR)
