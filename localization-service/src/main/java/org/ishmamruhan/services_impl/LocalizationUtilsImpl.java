@@ -1,12 +1,10 @@
 package org.ishmamruhan.services_impl;
 
 import org.ishmamruhan.constants.LocalizedAppConstants;
-import org.ishmamruhan.constants.LocalizedContentType;
 import org.ishmamruhan.entities.LocalizedContents;
 import org.ishmamruhan.repositories.AppLocalizedSpecification;
 import org.ishmamruhan.repositories.LocalizedContentRepository;
 import org.ishmamruhan.services.LocalizationUtils;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -15,6 +13,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,15 +36,20 @@ public class LocalizationUtilsImpl<T,R> implements LocalizationUtils<T,R> {
     }
 
     @Override
-    public Specification<T> getSpecification(
-            Map<String, Object> parameters, String languageCode,
-            LocalizedContentType localizedContentType, List<String> localizedFieldNames) {
+    public Specification<T> getSpecification(T object,
+            Map<String, Object> parameters, String languageCode) {
         Specification<T> specification = null;
 
+        List<String> localizedFields = getLocalizedFields(object);
+        if(localizedFields == null){
+            return AppLocalizedSpecification.getSimpleSpecification(parameters);
+        }
+
+        String localizedContentType = getContentType(object);
         if(!parameters.isEmpty()){
             if(languageCode != null){
                 specification = AppLocalizedSpecification.getLocalizedSpecification(
-                        parameters, languageCode, localizedContentType, localizedFieldNames);
+                        parameters, languageCode, localizedContentType, localizedFields);
             }else{
                 specification = AppLocalizedSpecification.getSimpleSpecification(parameters);
             }
@@ -55,8 +59,9 @@ public class LocalizationUtilsImpl<T,R> implements LocalizationUtils<T,R> {
 
     @Override
     public T saveLocalizedData(
-            T object,R requestBodyObject,JpaRepository<T,Long> dbRepository, LocalizedContentType contentType) {
+            T object,R requestBodyObject,JpaRepository<T,Long> dbRepository) {
         Long objectId = getObjectId(object);
+        String contentType = getContentType(object);
         for(Field field : requestBodyObject.getClass().getDeclaredFields()){
             if(field.getName().startsWith(LocalizedAppConstants.LOCALIZED_FIELD_STARTS_WITH)){
                 try {
@@ -86,13 +91,14 @@ public class LocalizationUtilsImpl<T,R> implements LocalizationUtils<T,R> {
     }
 
     @Override
-    public T updateLocalizedData(T object,R requestBodyObject,JpaRepository<T,Long> dbRepository, LocalizedContentType contentType) {
-        deleteLocalizedData(object,contentType);
-        return saveLocalizedData(object,requestBodyObject,dbRepository,contentType);
+    public T updateLocalizedData(T object,R requestBodyObject,JpaRepository<T,Long> dbRepository) {
+        deleteLocalizedData(object);
+        return saveLocalizedData(object,requestBodyObject,dbRepository);
     }
 
     @Override
-    public void deleteLocalizedData(T object, LocalizedContentType contentType) {
+    public void deleteLocalizedData(T object) {
+        String contentType = getContentType(object);
         List<LocalizedContents> localizedContents = localizationRepository.findAllByContentIdEqualsAndContentTypeEquals(
                 getObjectId(object), contentType
         );
@@ -103,8 +109,18 @@ public class LocalizationUtilsImpl<T,R> implements LocalizationUtils<T,R> {
 
     @Override
     public T getLocalizedData(
-            T object, String languageCode, LocalizedContentType contentType, String... fields) {
-        for (String field : fields) {
+            T object, String languageCode) {
+        List<String> localizedFields = getLocalizedFields(object);
+
+        if(localizedFields == null)return object;
+        String contentType = getContentType(object);
+
+        return getLocalizedData(object,languageCode,contentType,localizedFields);
+    }
+
+    private T getLocalizedData(
+            T object, String languageCode, String contentType, List<String> localizedFields) {
+        for (String field : localizedFields) {
             LocalizedContents localizedContent = localizationRepository
                     .findTopByContentIdEqualsAndLanguageCodeEqualsAndContentTypeEqualsAndFieldNameEqualsOrderByLastModifiedDateDesc(
                             getObjectId(object), languageCode, contentType,field);
@@ -115,22 +131,31 @@ public class LocalizationUtilsImpl<T,R> implements LocalizationUtils<T,R> {
         return object;
     }
 
-    @Cacheable("book_library")
     @Override
     public List<T> getLocalizedData(
-            List<T> objects, String languageCode, LocalizedContentType contentType, String... fields) {
+            List<T> objects, String languageCode) {
+        List<String> localizedFields = null;
+        String contentType = null;
+        if(!objects.isEmpty()){
+            T firstObject = objects.get(0);
+            localizedFields = getLocalizedFields(firstObject);
+            if(localizedFields == null)return objects;
+            contentType = getContentType(firstObject);
+        }else{
+            return objects;
+        }
+
         for (T object : objects) {
-            getLocalizedData(object,languageCode,contentType, fields);
+            getLocalizedData(object,languageCode,contentType,localizedFields);
         }
         return objects;
     }
 
-    @Cacheable("book_library")
     @Override
     public Page<T> getLocalizedData(
-            Page<T> page, String languageCode, LocalizedContentType contentType, String... fields) {
+            Page<T> page, String languageCode) {
         List<T> content = page.getContent();
-        content = getLocalizedData(content, languageCode,contentType, fields);
+        content = getLocalizedData(content, languageCode);
 
         return new PageImpl<>(content, page.getPageable(), page.getTotalElements());
     }
@@ -156,6 +181,21 @@ public class LocalizationUtilsImpl<T,R> implements LocalizationUtils<T,R> {
             declaredField.set(object, localizedText);
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    private String getContentType(T object){
+        return object.getClass().getSimpleName();
+    }
+
+    private List<String> getLocalizedFields(T object){
+        if(object == null)return null;
+        try{
+            Method method = object.getClass().getDeclaredMethod("availableLocalizedFields");
+            method.setAccessible(true);
+            return  (List<String>)method.invoke(object);
+        }catch (Exception exception){
+            return null;
         }
     }
 }

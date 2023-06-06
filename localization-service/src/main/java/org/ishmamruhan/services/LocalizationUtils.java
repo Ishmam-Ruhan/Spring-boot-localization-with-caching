@@ -1,6 +1,5 @@
 package org.ishmamruhan.services;
 
-import org.ishmamruhan.constants.LocalizedContentType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,20 +12,19 @@ import java.util.Map;
 public interface LocalizationUtils<T,R> {
     String getLanguageCode(Map<String, Object> parameters);
 
-    Specification<T> getSpecification(
-            Map<String, Object> parameters, String languageCode,
-            LocalizedContentType localizedContentType,List<String> localizedFieldNames);
+    Specification<T> getSpecification(T object ,
+            Map<String, Object> parameters, String languageCode);
 
-    T saveLocalizedData(T object, R requestBodyObject, JpaRepository<T,Long> dbRepository, LocalizedContentType contentType);
-    T updateLocalizedData(T object,R requestBodyObject, JpaRepository<T,Long> dbRepository,LocalizedContentType contentType);
-    void deleteLocalizedData(T object, LocalizedContentType contentType);
+    T saveLocalizedData(T object, R requestBodyObject, JpaRepository<T,Long> dbRepository);
+    T updateLocalizedData(T object,R requestBodyObject, JpaRepository<T,Long> dbRepository);
+    void deleteLocalizedData(T object);
 
     T getLocalizedData(
-            T object, String languageCode, LocalizedContentType contentType, String... fields);
+            T object, String languageCode);
 
     List<T> getLocalizedData(
-            List<T> objects, String languageCode, LocalizedContentType contentType, String... fields);
+            List<T> objects, String languageCode);
 
     Page<T> getLocalizedData(
-            Page<T> page, String languageCode, LocalizedContentType contentType, String... fields);
+            Page<T> page, String languageCode);
 }

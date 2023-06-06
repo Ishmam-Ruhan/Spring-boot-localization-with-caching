@@ -1,6 +1,5 @@
 package org.ishmamruhan.repositories;
 
-import org.ishmamruhan.constants.LocalizedContentType;
 import org.ishmamruhan.entities.LocalizedContents;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -17,7 +16,7 @@ import java.util.Map;
 public final class AppLocalizedSpecification {
     public static <T> Specification<T> getLocalizedSpecification(Map<String, Object> parameters,
                                                         String languageCode,
-                                                        LocalizedContentType localizedContentType,
+                                                        String localizedContentType,
                                                         List<String> localizedFieldNames) {
         return Specification.where((root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -58,7 +57,10 @@ public final class AppLocalizedSpecification {
                         if(languageCode != null && localizedFieldNames.contains(filterBy)){
                             Predicate searchTextPredicate =
                                     criteriaBuilder.like(criteriaBuilder.upper(subqueryRoot.get("content")), "%" + filterWith.toUpperCase() + "%");
+                            Predicate fieldNamePredicate =
+                                    criteriaBuilder.equal(subqueryRoot.get("fieldName"), filterBy);
                             subQueryPredicates.add(searchTextPredicate);
+                            subQueryPredicates.add(fieldNamePredicate);
                         }else{
                             predicates.add(criteriaBuilder.like(criteriaBuilder.upper(root.get(filterBy)), "%" + filterWith.toUpperCase() + "%"));
                         }

@@ -2,15 +2,19 @@ package org.ishmamruhan.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.ishmamruhan.audit_config.AuditModel;
+import org.ishmamruhan.services.Localization;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
 
 @Entity
-public class Book extends AuditModel<String> {
+public class Book extends AuditModel<String> implements Serializable, Localization {
 
     /**
-     *  At Entity level, we have to add a method that provides us localization field names
-     *  I've added it at the end of this entity
+     *  At Entity level, we have to implement an interface which have a method that provides us
+     *  localization field names
+     *  I've implemented it at the end of this entity
      */
 
     @Id
@@ -64,7 +68,8 @@ public class Book extends AuditModel<String> {
 
     @JsonIgnore
     @Transient
-    public String[] availableLocalizedFields(){
-        return new String[]{"authorName","bookTitle","bookPublisher"};
+    @Override
+    public List<String> availableLocalizedFields(){
+        return List.of("authorName","bookTitle","bookPublisher");
     }
 }

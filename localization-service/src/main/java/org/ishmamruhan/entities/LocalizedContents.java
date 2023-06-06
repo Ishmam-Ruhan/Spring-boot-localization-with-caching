@@ -1,7 +1,6 @@
 package org.ishmamruhan.entities;
 
 import org.ishmamruhan.audit_config.AuditModel;
-import org.ishmamruhan.constants.LocalizedContentType;
 
 import javax.persistence.*;
 
@@ -10,10 +9,8 @@ public class LocalizedContents extends AuditModel<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private Long contentId;
-    @Enumerated(EnumType.STRING)
-    private LocalizedContentType contentType;
+    private String contentType;
     private String languageCode;
     private String fieldName;
     @Column(columnDefinition = "TEXT")
@@ -22,7 +19,7 @@ public class LocalizedContents extends AuditModel<String> {
     public LocalizedContents() {
     }
 
-    public LocalizedContents(Long contentId, LocalizedContentType contentType, String languageCode, String fieldName, String content) {
+    public LocalizedContents(Long contentId, String contentType, String languageCode, String fieldName, String content) {
         this.contentId = contentId;
         this.contentType = contentType;
         this.languageCode = languageCode;
@@ -46,11 +43,11 @@ public class LocalizedContents extends AuditModel<String> {
         this.contentId = contentId;
     }
 
-    public LocalizedContentType getContentType() {
+    public String getContentType() {
         return contentType;
     }
 
-    public void setContentType(LocalizedContentType contentType) {
+    public void setContentType(String contentType) {
         this.contentType = contentType;
     }
 

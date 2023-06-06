@@ -1,12 +1,10 @@
 package org.ishmamruhan.services;
 
-import org.ishmamruhan.constants.LocalizedContentType;
 import org.ishmamruhan.cache_configuration.configurations.CacheConfig;
 import org.ishmamruhan.entities.Book;
 import org.ishmamruhan.repository.BookRepository;
 import org.ishmamruhan.requests.BookRequest;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -39,21 +37,21 @@ public class BookService {
         Book savedBook = bookRepository.save(book);
         refreshCache();
         return localizationUtils.saveLocalizedData(
-                savedBook,bookRequest, bookRepository, LocalizedContentType.BOOK);
+                savedBook,bookRequest, bookRepository);
     }
 
     public Book updateBook(BookRequest bookRequest){
         /**
          * While updating existing book, we just set non-localized data with main book entity from book request
          * After that, we have to save this book and pass the saved book to localizationUtils. It will set
-         * all localized fields, set defaults to main book fields and return us the actual book object
+         * all localized fields, set defaults to main book fields and return us the updated book object
          */
         Book book = bookRepository.findById(bookRequest.getId()).orElseThrow(() -> new RuntimeException("Book not found!"));
         book.setBookEIN(bookRequest.getBookEIN());
         Book savedBook = bookRepository.save(book);
         refreshCache();
         return localizationUtils.updateLocalizedData(
-                savedBook,bookRequest, bookRepository, LocalizedContentType.BOOK);
+                savedBook,bookRequest, bookRepository);
     }
 
     @Cacheable(value = CACHE_NAME,keyGenerator = CACHE_KEY_GENERATOR)
@@ -66,9 +64,7 @@ public class BookService {
         /**
          *  Step-2 : If you need specification, use localizationUtils to get specification
          */
-        Specification<Book> specification = localizationUtils.getSpecification(
-            parameters,languageCode, LocalizedContentType.BOOK, List.of(new Book().availableLocalizedFields())
-        );
+        Specification<Book> specification = localizationUtils.getSpecification(new Book(),parameters,languageCode);
 
         /**
          *  Step-3 :  Now, find books using previous specification. I didn't use pageable here, we can use it if needed
@@ -83,12 +79,10 @@ public class BookService {
 
         /**
          *  Step-4 :  Finally, if language code is available(not null in this case), then return localized data
-         *  localizationUtils.getLocalizedData() method accepts both normal list and paged data and returns same.
+         *  localizationUtils.getLocalizedData() method accepts both normal list and paged data and it returns same.
          */
         if(languageCode != null){
-            return localizationUtils.getLocalizedData(
-                    bookList,languageCode,LocalizedContentType.BOOK,new Book().availableLocalizedFields()
-            );
+            return localizationUtils.getLocalizedData(bookList,languageCode);
         }
         return bookList;
     }
@@ -100,7 +94,7 @@ public class BookService {
         Book book = bookRepository.findById(id).orElse(null);
         if(book != null){
             bookRepository.delete(book);
-            localizationUtils.deleteLocalizedData(book, LocalizedContentType.BOOK);
+            localizationUtils.deleteLocalizedData(book);
         }
     }
 
