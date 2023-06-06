@@ -20,18 +20,15 @@ public class BookService {
     private final LocalizationUtils<Book, BookRequest> localizationUtils;
     private final CacheConfig cacheConfig;
 
-    public BookService(BookRepository bookRepository, LocalizationUtils<Book, BookRequest> localizationUtils, CacheConfig cacheConfig) {
+    public BookService(BookRepository bookRepository,
+                       LocalizationUtils<Book, BookRequest> localizationUtils,
+                       CacheConfig cacheConfig) {
         this.bookRepository = bookRepository;
         this.localizationUtils = localizationUtils;
         this.cacheConfig = cacheConfig;
     }
 
     public Book saveBook(BookRequest bookRequest){
-        /**
-         * While creating new book, we just set non-localized data with main book entity from book request
-         * After that, we have to save this book and pass the saved book to localizationUtils. It will set
-         * all localized fields, set defaults to main book fields and return us the actual book object
-         */
         Book book = new Book();
         book.setBookEIN(bookRequest.getBookEIN());
         Book savedBook = bookRepository.save(book);

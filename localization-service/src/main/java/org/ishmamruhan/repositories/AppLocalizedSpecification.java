@@ -49,7 +49,9 @@ public final class AppLocalizedSpecification {
                 if(filterWith != null && !filterWith.isEmpty()) {
                     Class<?> type = root.get(filterBy).getJavaType();
 
-                    if (type.equals(Long.class)) {
+                    if(type.isEnum()){
+                        predicates.add(criteriaBuilder.equal(root.get(filterBy), filterWith));
+                    } else if (type.equals(Long.class)) {
                         predicates.add(criteriaBuilder.equal(root.get(filterBy), Long.valueOf(filterWith)));
                     } else if (type.equals(Boolean.class)) {
                         predicates.add(criteriaBuilder.equal(root.get(filterBy), Boolean.valueOf(filterWith)));
@@ -104,7 +106,10 @@ public final class AppLocalizedSpecification {
                 if(filterWith != null && !filterWith.isEmpty()) {
                     Class<?> type = root.get(filterBy).getJavaType();
 
-                    if (type.equals(Long.class)) {
+                    if(type.isEnum()){
+                        predicates.add(criteriaBuilder.equal(root.get(filterBy), filterWith));
+                    }
+                    else if (type.equals(Long.class)) {
                         predicates.add(criteriaBuilder.equal(root.get(filterBy), Long.valueOf(filterWith)));
                     } else if (type.equals(Boolean.class)) {
                         predicates.add(criteriaBuilder.equal(root.get(filterBy), Boolean.valueOf(filterWith)));
