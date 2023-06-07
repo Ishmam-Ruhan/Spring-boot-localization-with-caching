@@ -31,10 +31,9 @@ public class BookService {
     public Book saveBook(BookRequest bookRequest){
         Book book = new Book();
         book.setBookEIN(bookRequest.getBookEIN());
-        Book savedBook = bookRepository.save(book);
         refreshCache();
         return localizationUtils.saveLocalizedData(
-                savedBook,bookRequest, bookRepository);
+                book,bookRequest, bookRepository);
     }
 
     public Book updateBook(BookRequest bookRequest){
@@ -45,10 +44,9 @@ public class BookService {
          */
         Book book = bookRepository.findById(bookRequest.getId()).orElseThrow(() -> new RuntimeException("Book not found!"));
         book.setBookEIN(bookRequest.getBookEIN());
-        Book savedBook = bookRepository.save(book);
         refreshCache();
         return localizationUtils.updateLocalizedData(
-                savedBook,bookRequest, bookRepository);
+                book,bookRequest, bookRepository);
     }
 
     /**

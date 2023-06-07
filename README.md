@@ -15,8 +15,8 @@ First, we have to implement an interface called 'Localization' provided by local
 public class Book extends AuditModel<String> implements Serializable, Localization {
 
     /**
-     *  At Entity level, we have to implement an interface named 'Localization' which have a method that provides us
-     *  localization field names
+     *  At Entity level, we have to implement an interface named 'Localization' which 
+     *  have a method that provides us localization field names.
      */
 ```
 and the ovrridden method:
@@ -69,8 +69,8 @@ As we can see, we have added, ```_localization_``` before every field name that 
 Now, while saving/updating book, 
 
     - We have to set all non-localized field value to main object.
-    - save the main object.
-    - send the saved main object through localizationUtils service with repository,
+
+    - send the non-saved main object through localizationUtils service with repository,
 
 Example:
 

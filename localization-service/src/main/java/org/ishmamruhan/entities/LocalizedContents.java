@@ -1,11 +1,9 @@
 package org.ishmamruhan.entities;
 
-import org.ishmamruhan.audit_config.AuditModel;
-
 import javax.persistence.*;
 
 @Entity
-public class LocalizedContents extends AuditModel<String> {
+public class LocalizedContents {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

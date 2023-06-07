@@ -62,6 +62,7 @@ public class LocalizationUtilsImpl<T,R> implements LocalizationUtils<T,R> {
     @Override
     public T saveLocalizedData(
             T object,R requestBodyObject,JpaRepository<T,Long> dbRepository) {
+        object = dbRepository.save(object);
         Long objectId = getObjectId(object);
         String contentType = getContentType(object);
         for(Field field : requestBodyObject.getClass().getDeclaredFields()){
@@ -124,7 +125,7 @@ public class LocalizationUtilsImpl<T,R> implements LocalizationUtils<T,R> {
             T object, String languageCode, String contentType, List<String> localizedFields) {
         for (String field : localizedFields) {
             LocalizedContents localizedContent = localizationRepository
-                    .findTopByContentIdEqualsAndLanguageCodeEqualsAndContentTypeEqualsAndFieldNameEqualsOrderByLastModifiedDateDesc(
+                    .findTopByContentIdEqualsAndLanguageCodeEqualsAndContentTypeEqualsAndFieldNameEqualsOrderByIdDesc(
                             getObjectId(object), languageCode, contentType,field);
             if(localizedContent != null){
                 setLocalizedField(object, field, localizedContent.getContent());

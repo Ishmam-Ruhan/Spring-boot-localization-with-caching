@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface LocalizedContentRepository extends JpaRepository<LocalizedContents,Long> {
-    LocalizedContents findTopByContentIdEqualsAndLanguageCodeEqualsAndContentTypeEqualsAndFieldNameEqualsOrderByLastModifiedDateDesc(
+    LocalizedContents findTopByContentIdEqualsAndLanguageCodeEqualsAndContentTypeEqualsAndFieldNameEqualsOrderByIdDesc(
             Long contentId, String languageCode, String contentType, String fieldName);
 
     List<LocalizedContents> findAllByContentIdEqualsAndContentTypeEquals(Long contentId, String contentType);
