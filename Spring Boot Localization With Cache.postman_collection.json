@@ -153,7 +153,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8081/api/book/all?authorName=В&language=ru",
+					"raw": "http://localhost:8081/api/book/all?language=bn&bookTitle=পদার্থবিদ্যা&bookEIN=0028267214",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -167,11 +167,20 @@
 					"query": [
 						{
 							"key": "authorName",
-							"value": "В"
+							"value": "sh",
+							"disabled": true
 						},
 						{
 							"key": "language",
-							"value": "ru"
+							"value": "bn"
+						},
+						{
+							"key": "bookTitle",
+							"value": "পদার্থবিদ্যা"
+						},
+						{
+							"key": "bookEIN",
+							"value": "0028267214"
 						}
 					]
 				}

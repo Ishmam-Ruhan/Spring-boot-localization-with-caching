@@ -12,18 +12,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Service
 @Primary
 public class LocalizationUtilsImpl<T,R> implements LocalizationUtils<T,R> {
+
+    private static final Integer CHUNK_SIZE = 10;
+
     private final LocalizedContentRepository localizationRepository;
 
     public LocalizationUtilsImpl(LocalizedContentRepository localizationRepository) {
@@ -121,7 +124,8 @@ public class LocalizationUtilsImpl<T,R> implements LocalizationUtils<T,R> {
         return getLocalizedData(object,languageCode,contentType,localizedFields);
     }
 
-    private T getLocalizedData(
+    @Async
+    protected T getLocalizedData(
             T object, String languageCode, String contentType, List<String> localizedFields) {
         for (String field : localizedFields) {
             LocalizedContents localizedContent = localizationRepository
@@ -137,21 +141,34 @@ public class LocalizationUtilsImpl<T,R> implements LocalizationUtils<T,R> {
     @Override
     public List<T> getLocalizedData(
             List<T> objects, String languageCode) {
-        List<String> localizedFields = null;
-        String contentType = null;
+        List<String> localizedFields;
+        String contentType;
         if(!objects.isEmpty()){
             T firstObject = objects.get(0);
             localizedFields = getLocalizedFields(firstObject);
             if(localizedFields == null)return objects;
             contentType = getContentType(firstObject);
         }else{
+            localizedFields = null;
+            contentType = null;
             return objects;
         }
 
-        for (T object : objects) {
-            getLocalizedData(object,languageCode,contentType,localizedFields);
-        }
-        return objects;
+        List<List<T>> subLists = splitList(objects);
+
+        List<CompletableFuture<Void>> futures = subLists.stream()
+                .map(sublist -> CompletableFuture.runAsync(() -> {
+                    for (T object : sublist) {
+                        getLocalizedData(object, languageCode, contentType, localizedFields);
+                    }
+                }))
+                .toList();
+
+        CompletableFuture<Void> allFutures = CompletableFuture.allOf(
+                futures.toArray(new CompletableFuture[0])
+        );
+
+        return allFutures.thenApply(v -> objects).join();
     }
 
     @Override
@@ -240,5 +257,20 @@ public class LocalizationUtilsImpl<T,R> implements LocalizationUtils<T,R> {
         }catch (Exception exception){
             return null;
         }
+    }
+    private List<List<T>> splitList(List<T> inputList) {
+        int chunkSize = (inputList.size() % CHUNK_SIZE) == 0 ? (inputList.size() / CHUNK_SIZE) : ((inputList.size() / CHUNK_SIZE) +1);
+        List<List<T>> subLists = new ArrayList<>();
+        int listSize = inputList.size();
+        int startIndex = 0;
+        int endIndex = Math.min(chunkSize, listSize);
+
+        while (startIndex < listSize) {
+            subLists.add(inputList.subList(startIndex, endIndex));
+            startIndex = endIndex;
+            endIndex = Math.min(endIndex + chunkSize, listSize);
+        }
+
+        return subLists;
     }
 }
