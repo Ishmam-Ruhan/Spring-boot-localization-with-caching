@@ -259,16 +259,15 @@ public class LocalizationUtilsImpl<T,R> implements LocalizationUtils<T,R> {
         }
     }
     private List<List<T>> splitList(List<T> inputList) {
-        int chunkSize = (inputList.size() % CHUNK_SIZE) == 0 ? (inputList.size() / CHUNK_SIZE) : ((inputList.size() / CHUNK_SIZE) +1);
         List<List<T>> subLists = new ArrayList<>();
         int listSize = inputList.size();
         int startIndex = 0;
-        int endIndex = Math.min(chunkSize, listSize);
+        int endIndex = Math.min(CHUNK_SIZE, listSize);
 
         while (startIndex < listSize) {
             subLists.add(inputList.subList(startIndex, endIndex));
             startIndex = endIndex;
-            endIndex = Math.min(endIndex + chunkSize, listSize);
+            endIndex = Math.min(endIndex + CHUNK_SIZE, listSize);
         }
 
         return subLists;

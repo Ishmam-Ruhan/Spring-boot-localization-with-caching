@@ -106,6 +106,7 @@ public class BookService {
         if(book != null){
             bookRepository.delete(book);
             localizationUtils.deleteLocalizedData(book);
+            refreshCache();
         }
     }
 
